@@ -35,7 +35,7 @@ class Automock(Include):
     def run(self):
         # Use include directive implementation with .c -> .rst
         base, extension = os.path.splitext(self._get_filename())
-        self.arguments[0] = '../test/' + base + '.rst'
+        self.arguments[0] = f'../test/{base}.rst'
 
         return super(Include, self).run()
 

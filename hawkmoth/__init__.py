@@ -46,11 +46,7 @@ class CAutoBaseDirective(SphinxDirective):
 
     def __display_parser_diagnostics(self, errors):
         for (severity, filename, lineno, msg) in errors:
-            if filename:
-                toprint = f'{filename}:{lineno}: {msg}'
-            else:
-                toprint = f'{msg}'
-
+            toprint = f'{filename}:{lineno}: {msg}' if filename else f'{msg}'
             if severity.value <= self.env.app.verbosity:
                 self.logger.log(self._log_lvl[severity], toprint,
                                 location=(self.env.docname, self.lineno))
@@ -163,7 +159,7 @@ class CAutoDocDirective(CAutoBaseDirective):
 
     def _get_filenames(self):
         for pattern in self.arguments:
-            filenames = glob.glob(self.env.config.cautodoc_root + '/' + pattern)
+            filenames = glob.glob(f'{self.env.config.cautodoc_root}/{pattern}')
             if len(filenames) == 0:
                 self.logger.warning(f'Pattern "{pattern}" does not match any files.',
                                     location=(self.env.docname, self.lineno))
@@ -218,9 +214,7 @@ class CAutoFunctionDirective(CAutoSymbolDirective):
 
 def members_filter(argument):
     # Use None for members option without an argument to not filter.
-    if argument is None:
-        return None
-    return strutil.string_list(argument)
+    return None if argument is None else strutil.string_list(argument)
 
 class CAutoCompoundDirective(CAutoSymbolDirective):
     option_spec = CAutoSymbolDirective.option_spec.copy()

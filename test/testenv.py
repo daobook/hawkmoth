@@ -15,9 +15,7 @@ sys.path.insert(0, rootdir)
 
 def get_testid(testcase):
     """Convert a testcase filename into a test case identifier."""
-    name = os.path.splitext(os.path.basename(testcase))[0]
-
-    return name
+    return os.path.splitext(os.path.basename(testcase))[0]
 
 def get_testcases(path):
     for f in sorted(os.listdir(path)):
@@ -55,10 +53,7 @@ def get_input_filename(options, path=None):
         directive_options = options.get('directive-options', {})
         basename = directive_options.get('file')
 
-    if path:
-        return os.path.join(path, basename)
-    else:
-        return basename
+    return os.path.join(path, basename) if path else basename
 
 def get_directive_string(options):
     directive = options.get('directive', 'autodoc')
@@ -80,7 +75,7 @@ def modify_filename(filename, **kwargs):
     ext = kwargs.get('ext')
     if ext is not None:
         base, extension = os.path.splitext(filename)
-        filename = base + '.' + ext
+        filename = f'{base}.{ext}'
 
     dirname = kwargs.get('dir')
     if dirname is not None:

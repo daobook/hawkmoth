@@ -154,7 +154,7 @@ class Docstring():
         return self._meta
 
     def _get_decl_name(self):
-        return self._decl_name if self._decl_name else self._name
+        return self._decl_name or self._name
 
     def get_name(self):
         return self._name

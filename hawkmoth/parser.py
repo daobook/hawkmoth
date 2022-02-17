@@ -128,9 +128,7 @@ def _get_macro_args(cursor):
             return args
         elif token.spelling == ',':
             continue
-        elif token.kind == TokenKind.IDENTIFIER:
-            args.append(token.spelling)
-        elif token.spelling == '...':
+        elif token.kind == TokenKind.IDENTIFIER or token.spelling == '...':
             args.append(token.spelling)
         else:
             break
@@ -177,8 +175,10 @@ def _anonymous_fixup(ttype, name):
     if name:
         return ttype, name
 
-    mo = re.match(r'(?a)^(?P<type>enum|struct|union) ([^:]+::)?\((anonymous|unnamed) at [^)]+\)$', ttype)  # noqa: E501
-    if mo:
+    if mo := re.match(
+        r'(?a)^(?P<type>enum|struct|union) ([^:]+::)?\((anonymous|unnamed) at [^)]+\)$',
+        ttype,
+    ):
         # Anonymous
         name = ''
     else:

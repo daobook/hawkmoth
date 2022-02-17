@@ -43,8 +43,7 @@ def _capture(capsys):
 def _get_output(testcase, monkeypatch, capsys, **options):
     args = [testenv.get_input_filename(options, path=testenv.testdir)]
 
-    directive = options.get('directive')
-    if directive:
+    if directive := options.get('directive'):
         pytest.skip(f'{directive} directive test')
 
     options = options.get('directive-options', {})
@@ -57,8 +56,7 @@ def _get_output(testcase, monkeypatch, capsys, **options):
         if transform is not None:
             pytest.skip('cli does not support generic transformations')
 
-    clang_args = options.get('clang')
-    if clang_args:
+    if clang_args := options.get('clang'):
         args += [f'--clang={clang_arg}' for clang_arg in clang_args]
 
     _mock_args(monkeypatch, args)

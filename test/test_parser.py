@@ -11,11 +11,7 @@ from hawkmoth.util import doccompat
 from test import conf, testenv
 
 def _get_output(testcase, **options):
-    docs_str = ''
-    errors_str = ''
-
-    directive = options.get('directive')
-    if directive:
+    if directive := options.get('directive'):
         pytest.skip(f'{directive} directive test')
 
     input_filename = testenv.get_input_filename(options, path=testenv.testdir)
@@ -30,16 +26,16 @@ def _get_output(testcase, **options):
         transform = lambda comment: doccompat.convert(comment, transform=tropt)
     else:
         tropt = options.pop('transform', None)
-        if tropt is not None:
-            transform = conf.cautodoc_transformations[tropt]
-        else:
-            transform = None
+        transform = conf.cautodoc_transformations[tropt] if tropt is not None else None
+    docs_str = ''.join(
+        comment.get_docstring(transform=transform) + '\n'
+        for comment in comments.walk()
+    )
 
-    for comment in comments.walk():
-        docs_str += comment.get_docstring(transform=transform) + '\n'
-
-    for (severity, filename, lineno, msg) in errors:
-        errors_str += f'{severity.name}: {os.path.basename(filename)}:{lineno}: {msg}\n'
+    errors_str = ''.join(
+        f'{severity.name}: {os.path.basename(filename)}:{lineno}: {msg}\n'
+        for (severity, filename, lineno, msg) in errors
+    )
 
     return docs_str, errors_str
 
